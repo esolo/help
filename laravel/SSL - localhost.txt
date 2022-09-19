@@ -1,0 +1,24 @@
+https://letsencrypt.org/ru/docs/certificates-for-localhost/
+
+//generation ssl for localhost (browser NOT trust)
+
+openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+   
+
+            OR   
+
+
+Generate SSL for localhost (browser trust)
+  sudo apt-get install mkcert libnss3-tools
+  mkcert localhost
+  cd ~
+  mv localhost.pem localhost.crt
+  mv localhost-key.pem localhost.key
+  sudo mkdir /etc/apache2/ssl/
+  sudo cp localhost.crt /etc/apache2/ssl/
+  sudo cp localhost.key /etc/apache2/ssl/
+  #trust the browser's localhost ssl certificate 
+  mkcert -install
