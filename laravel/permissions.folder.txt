@@ -1,2 +1,6 @@
 sudo chgrp -R www-data storage bootstrap/cache
 sudo chmod -R ug+rwx storage bootstrap/cache
+
+
+https://laravel.com/docs/9.x/logging#channel-prerequisites
+  permission 0666 -> storage/logs/laravel.log
