@@ -4,3 +4,28 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 
 https://laravel.com/docs/9.x/logging#channel-prerequisites
   permission 0666 -> storage/logs/laravel.log
+
+
+
+-----------------------------------------------------------
+
+
+https://stackoverflow.com/questions/23411520/how-to-fix-error-laravel-log-could-not-be-opened
+
+Never set a directory to 777. you should change directory ownership. so set your current user that you are logged in with as owner and the webserver user (www-data, apache, ...) as the group. You can try this:
+
+sudo chown -R $USER:www-data storage
+sudo chown -R $USER:www-data bootstrap/cache
+then to set directory permission try this:
+
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+Update:
+
+Webserver user and group depend on your webserver and your OS. to figure out what's your web server user and group use the following commands. for nginx use:
+
+ps aux|grep nginx|grep -v grep
+
+for apache use:
+
+ps aux | egrep '(apache|httpd)'
