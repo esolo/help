@@ -4,8 +4,13 @@
 * Add the following line: idea.max.intellisense.filesize=6000
 * Restart PHPStorm
 
-PHPStorm 2022.2
-bundled 222.3345.135
 
-tailwind 3.1.8 autocomplete success show
-tailwind 3.2.0 autocomplete not working
+
+## tailwind 3.1.8 autocomplete success working
+## tailwind 3.2.0 autocomplete NOT working
+
+PHPStorm 2022.2
+tailwindcss-222.3345.135.zip
+
+PHPStorm 2022.2.3
+tailwindcss-222.4345.14.zip
