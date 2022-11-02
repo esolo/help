@@ -1,0 +1,55 @@
+I see my computer wake up sometimes when I’m not using it.
+After some searching its the devices in /proc/acpi/wakeup that are allowed to do this.
+By echoing the “4-character device name” to /proc/acpi/wakeup you can enable/disable these.
+(eg: $ echo USB1 | sudo tee /proc/acpi/wakeup to enable/disable USB1)
+
+I would like an extra panel under Power Management, called “Wake-Up Events”
+or something, so i can check and uncheck these.
+
+Currently i have solved this issue with a systemd script, but it could be so much easier just in a nice tab :smile:
+
+Thanks a lot
+
+For those interested, these are my devices, i enabled only the power button. So no mouse click, keyboard touch or wlan/lan packet can wake it up. (see systemd script below, change accordingly for your own benefit)
+
+$ cat /proc/acpi/wakeup
+Device	S-state	  Status   Sysfs node
+PCI0	  S4	*disabled  no-bus:pci0000:00
+PCIE	  S4	*disabled  pci:0000:00:1e.0
+USB1	  S0	*disabled  pci:0000:00:1d.0
+USB2	  S0	*disabled  pci:0000:00:1d.1
+USB3	  S0	*disabled  pci:0000:00:1d.2
+USB4	  S0	*disabled  pci:0000:00:1a.0
+USB5	  S0	*disabled  pci:0000:00:1a.1
+USB6	  S0	*disabled  pci:0000:00:1a.2
+EHC2	  S0	*disabled  pci:0000:00:1a.7
+EHCI	  S0	*disabled  pci:0000:00:1d.7
+AZAL	  S3	*disabled  pci:0000:00:1b.0
+RP01	  S4	*disabled  pci:0000:00:1c.0
+RP02	  S4	*disabled  pci:0000:00:1c.1
+RP03	  S4	*disabled  pci:0000:00:1c.2
+RP04	  S3	*disabled  pci:0000:00:1c.3
+RP05	  S3	*disabled
+RP06	  S5	*disabled
+LID	  S3	*disabled  platform:PNP0C0D:00
+PBTN	  S4	*enabled   platform:PNP0C0C:00
+
+sudo nano /etc/systemd/system/acpi-wake.service:
+
+[Unit]
+Description=ACPI Wake Service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "for i in $(cat /proc/acpi/wakeup|grep enabled|awk '{print $1}'|xargs); do [ $i != PBTN ] && echo $i|tee /proc/acpi/wakeup;done"
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+To enable and start the service
+$ systemctl start acpi-wake.service
+$ systemctl enable acpi-wake.service
